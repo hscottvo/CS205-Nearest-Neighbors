@@ -1,35 +1,44 @@
 import numpy as np
-from joblib import Parallel
+from joblib import Parallel, delayed
 from tqdm import tqdm
 
 import parse
 
 
-def calc_diff_squared(features: np.ndarray, i: int, j: int, feature: int):
-    return (features[i, feature] - features[j, feature]) ** 2
-
-
+# https://stackoverflow.com/questions/36423975/how-to-use-nested-loops-in-joblib-library-in-python
+# https://github.com/joblib/joblib/issues/1103
 def parallel_dist(features: np.ndarray):
+    num_samples = features.shape[0]
+    num_features = features.shape[1]
     dist_matrix = np.zeros((features.shape[0], features.shape[0], features.shape[1]))
 
-    pass
+    def calc_diff_squared(i: int, j: int, k: int):
+        if i == j:
+            return
+        val = (features[i, k] - features[j, k]) ** 2
+        dist_matrix[i, j, k] = val
+
+    Parallel(n_jobs=4, require="sharedmem")(
+        delayed(calc_diff_squared)(i, j, k)
+        for i in tqdm(range(num_samples))
+        for j in range(i)
+        for k in range(num_features)
+    )
+
+
+def dist(features: np.ndarray):
+    num_samples = features.shape[0]
+    num_features = features.shape[1]
+    dist_matrix = np.zeros((num_samples, num_samples, num_features))
+    for i in tqdm(range(num_samples)):
+        for j in range(i):
+            for k in range(num_features):
+                dist_matrix[i, j, k] = (features[i, k] - features[j, k]) ** 2
 
 
 args = parse.parse()
 
 labels, features = parse.read_file(args.file)
 
-num_samples = features.shape[0]
-num_features = features.shape[1]
-
-dist_matrix = np.zeros((features.shape[0], features.shape[0], features.shape[1]))
-# print(dist_matrix.shape)
-
-print(num_samples)
-for i in tqdm(range(num_samples)):
-    for j in range(num_samples):
-        for feature in range(num_features):
-            dist_matrix[i, j, feature] = (
-                features[i, feature] - features[j, feature]
-            ) ** 2
-print(dist_matrix[:, :, 0])
+# parallel_dist(features)
+dist(features)
