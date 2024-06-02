@@ -1,9 +1,9 @@
 import logging
 import sys
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
-from tqdm import tqdm
 
 from parse import parse_main
 from preprocess import read

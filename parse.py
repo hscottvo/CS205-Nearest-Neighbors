@@ -1,4 +1,4 @@
-from argparse import ArgumentParser, ArgumentTypeError, FileType
+from argparse import ArgumentParser, FileType
 from typing import Tuple
 
 import numpy as np
