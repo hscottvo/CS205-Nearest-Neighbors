@@ -1,5 +1,6 @@
 import os
 from io import TextIOWrapper
+from math import sqrt
 from pathlib import Path
 
 import numpy as np
@@ -69,6 +70,25 @@ def write(filename: TextIOWrapper):
     print(f"\t{labels_write_path}")
 
 
-args = parse.parse_preprocess()
+def read(filename: TextIOWrapper):
+    path = Path(filename.name)
 
-write(filename=args.file)
+    features_path = path.parent / f"{path.stem}_features.csv"
+    labels_path = path.parent / f"{path.stem}_labels.csv"
+
+    labels = pl.read_csv(labels_path).to_numpy()[:, 0]
+
+    features = pl.read_csv(features_path).to_numpy()
+    num_samples = int(sqrt(features.shape[0]))
+    num_features = features.shape[1]
+
+    features = features.reshape((num_samples, num_samples, num_features))
+
+    return features, labels
+
+
+if __name__ == "__main__":
+
+    args = parse.parse_preprocess()
+
+    write(filename=args.file)

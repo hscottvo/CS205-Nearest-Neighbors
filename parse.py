@@ -15,6 +15,22 @@ def read_file(file) -> Tuple[np.ndarray, np.ndarray]:
 def parse_preprocess():
     parser = ArgumentParser()
     parser.add_argument(
-        "-f", "--file", type=FileType("r"), help="The data file to pass in"
+        "-f",
+        "--file",
+        type=FileType("r"),
+        required=True,
+        help="The data file to pass in",
+    )
+    return parser.parse_args()
+
+
+def parse_main():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "-f",
+        "--file",
+        type=FileType("r"),
+        required=True,
+        help="The data file that features/labels are based on ",
     )
     return parser.parse_args()
