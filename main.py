@@ -2,9 +2,10 @@ import logging
 import sys
 from argparse import Namespace
 from datetime import datetime
-from pathlib import Path
 
 import numpy as np
+from joblib import Parallel, delayed
+from tqdm import tqdm
 
 from parse import parse_main
 from preprocess import read
@@ -28,13 +29,30 @@ def query(diffs: np.ndarray, labels: np.ndarray, point: int) -> int:
 
 
 def n_fold_accuracy(result: np.ndarray, labels: np.ndarray) -> float:
+    chunk_size = 100
+    assert result.shape[0] % chunk_size == 0
+
     num_samples = result.shape[0]
     assert result.shape[0] == result.shape[1]
 
     acc_array = np.empty((num_samples))
-    for i in range(num_samples):
-        pred_label = query(result, labels, i)
-        acc_array[i] = pred_label == labels[i]
+
+    def call_query(sample_idx: int):
+        pred_label = query(result, labels, sample_idx)
+        acc_array[sample_idx] = pred_label == labels[sample_idx]
+
+    def process_chunk(chunk):
+        for idx in chunk:
+            call_query(idx)
+
+    chunks = [
+        range(i * chunk_size, i * chunk_size + chunk_size)
+        for i in range(num_samples // chunk_size)
+    ]
+
+    Parallel(n_jobs=-1, require="sharedmem")(
+        delayed(process_chunk)(i) for i in tqdm(chunks)
+    )
 
     assert np.all(
         (acc_array == 0) | (acc_array == 1)
@@ -75,6 +93,7 @@ if __name__ == "__main__":
     feature_set = set()
     prev_acc = 0
     while True:
+        print(f"Trying with {len(feature_set) + 1} features")
         timer_start = datetime.now()
         best_acc = prev_acc
         best_idx = -1
