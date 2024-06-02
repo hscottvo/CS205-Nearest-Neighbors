@@ -1,5 +1,6 @@
 import logging
 import sys
+from argparse import Namespace
 from datetime import datetime
 from pathlib import Path
 
@@ -43,37 +44,54 @@ def n_fold_accuracy(result: np.ndarray, labels: np.ndarray) -> float:
     return accuracy
 
 
-if __name__ == "__main__":
+def config_logger(args: Namespace):
     logger = logging.getLogger(__name__)
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logging.INFO)
-    logger.addHandler(handler)
+    print_handler = logging.StreamHandler(sys.stdout)
 
-    logging.basicConfig(filename="run.log", encoding="utf-8", level=logging.DEBUG)
-    logger.info(f"Running at {datetime.now()}")
+    if args.verbose:
+        print_handler.setLevel(logging.INFO)
+        logger.addHandler(print_handler)
 
+    logging.basicConfig(filename=args.log.name, encoding="utf-8", level=logging.DEBUG)
+
+    return logger
+
+
+if __name__ == "__main__":
     args = parse_main()
 
-    logger.info(f"Reading from {args.file.name}")
+    logger = config_logger(args)
+
+    logger.info(f"Running at {datetime.now()}")
+
+    timer_start = datetime.now()
+    logger.info(f"Reading from {args.file.name} at {timer_start}")
     features, labels = read(args.file)
+    timer_end = datetime.now()
+    logger.info(f"Took {(timer_end - timer_start).total_seconds()} seconds to read")
 
     logger.info("Starting search")
 
     feature_set = set()
     prev_acc = 0
     while True:
+        timer_start = datetime.now()
         best_acc = prev_acc
         best_idx = -1
         for i in range(features.shape[2]):
             if i not in feature_set:
                 features_to_try = list(feature_set) + [i]
-                logger.info(f"\tTrying features {features_to_try}")
+                logger.info(f"\t\tTrying features {features_to_try}")
                 acc = n_fold_accuracy(features[:, :, features_to_try], labels)
-                logger.info(f"\t\tAccuracy: {acc}")
+                logger.info(f"\t\t\tAccuracy: {acc}")
                 if acc > best_acc:
-                    logger.info(f"\t\t{acc} beats {best_acc}")
+                    logger.info(f"\t\t\t{acc} beats {best_acc}")
                     best_acc = acc
                     best_idx = i
+        timer_end = datetime.now()
+        logger.info(
+            f"\tTook {(timer_end - timer_start).total_seconds()} seconds to run with {len(feature_set) + 1} features"
+        )
         if best_idx == -1:
             logger.info(
                 f"Finished search with {feature_set} as final features and accuracy {best_acc}"

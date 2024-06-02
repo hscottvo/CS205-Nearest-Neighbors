@@ -33,4 +33,19 @@ def parse_main():
         required=True,
         help="The data file that features/labels are based on ",
     )
+    parser.add_argument(
+        "-l",
+        "--log",
+        type=FileType("w"),
+        required=False,
+        default="logs/run.log",
+        help="Location to write logs",
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        default=False,
+        help="Whether or not to print logging statements",
+    )
     return parser.parse_args()
