@@ -87,12 +87,12 @@ inline void forward(vector<vector<vector<double>>> &cache,
   cout << "with accuracy " << best_acc_final * 100 << "%" << endl;
 
   t_end = chrono::high_resolution_clock::now();
-  elapsed_time_ms =
-      chrono::duration<double, std::milli>(t_end - t_start).count();
+  elapsed_time_ms = chrono::duration<double, milli>(t_end - t_start).count();
   cout << "Took " << elapsed_time_ms << " milliseconds to run forward search"
        << endl;
 }
 
+// TODO: make this actually backward
 inline void backward(vector<vector<vector<double>>> &cache,
                      vector<int> &labels) {
   auto t_start = chrono::high_resolution_clock::now();
@@ -161,8 +161,7 @@ inline void backward(vector<vector<vector<double>>> &cache,
   cout << "with accuracy " << best_acc_final * 100 << "%" << endl;
 
   t_end = chrono::high_resolution_clock::now();
-  elapsed_time_ms =
-      chrono::duration<double, std::milli>(t_end - t_start).count();
+  elapsed_time_ms = chrono::duration<double, milli>(t_end - t_start).count();
   cout << "Took " << elapsed_time_ms << " milliseconds to run backward search"
        << endl;
 }

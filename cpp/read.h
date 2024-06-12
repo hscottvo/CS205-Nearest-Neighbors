@@ -37,8 +37,8 @@ inline pair<int, vector<double>> split_lines(string &s) {
 }
 
 inline pair<vector<int>, vector<vector<double>>> read_file(string &filename) {
-  auto t_start = std::chrono::high_resolution_clock::now();
-  auto t_end = std::chrono::high_resolution_clock::now();
+  auto t_start = chrono::high_resolution_clock::now();
+  auto t_end = chrono::high_resolution_clock::now();
   double elapsed_time_ms;
   t_start = chrono::high_resolution_clock::now();
 
@@ -60,8 +60,7 @@ inline pair<vector<int>, vector<vector<double>>> read_file(string &filename) {
   }
 
   t_end = chrono::high_resolution_clock::now();
-  elapsed_time_ms =
-      std::chrono::duration<double, std::milli>(t_end - t_start).count();
+  elapsed_time_ms = chrono::duration<double, milli>(t_end - t_start).count();
   cout << "Took " << elapsed_time_ms << " milliseconds to read file" << endl;
 
   return make_pair(labels, features);

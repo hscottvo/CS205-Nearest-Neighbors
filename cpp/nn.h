@@ -37,8 +37,8 @@ inline double default_rate(vector<int> labels) {
 
 inline vector<vector<vector<double>>>
 instantiate_cache(vector<vector<double>> &data) {
-  auto t_start = std::chrono::high_resolution_clock::now();
-  auto t_end = std::chrono::high_resolution_clock::now();
+  auto t_start = chrono::high_resolution_clock::now();
+  auto t_end = chrono::high_resolution_clock::now();
   double elapsed_time_ms;
   t_start = chrono::high_resolution_clock::now();
 
@@ -46,8 +46,7 @@ instantiate_cache(vector<vector<double>> &data) {
       data.size(), vector<vector<double>>(
                        data.size(), vector<double>(data.at(0).size(), -1)));
   t_end = chrono::high_resolution_clock::now();
-  elapsed_time_ms =
-      std::chrono::duration<double, std::milli>(t_end - t_start).count();
+  elapsed_time_ms = chrono::duration<double, milli>(t_end - t_start).count();
   cout << "Took " << elapsed_time_ms
        << " milliseconds to instantiate cache array of shape ";
   cout << ret.size() << ", " << ret.at(0).size() << ", " << ret[0][0].size()
@@ -57,8 +56,8 @@ instantiate_cache(vector<vector<double>> &data) {
 
 inline vector<vector<vector<double>>>
 cache_diff_squared(vector<vector<double>> &data) {
-  auto t_start = std::chrono::high_resolution_clock::now();
-  auto t_end = std::chrono::high_resolution_clock::now();
+  auto t_start = chrono::high_resolution_clock::now();
+  auto t_end = chrono::high_resolution_clock::now();
   double elapsed_time_ms;
 
   auto ret = instantiate_cache(data);
@@ -80,8 +79,7 @@ cache_diff_squared(vector<vector<double>> &data) {
     }
   }
   t_end = chrono::high_resolution_clock::now();
-  elapsed_time_ms =
-      std::chrono::duration<double, std::milli>(t_end - t_start).count();
+  elapsed_time_ms = chrono::duration<double, milli>(t_end - t_start).count();
   cout << "Took " << elapsed_time_ms << " milliseconds to fill cache file"
        << endl;
 
