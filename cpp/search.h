@@ -22,10 +22,6 @@ inline double LOO_accuracy(vector<vector<vector<double>>> &cache,
 
   return correct_count / double(labels.size());
 }
-inline void parallel_forward_search() {
-  int x = 5;
-  return;
-}
 
 inline void forward(vector<vector<vector<double>>> &cache,
                     vector<int> &labels) {
@@ -60,8 +56,8 @@ inline void forward(vector<vector<vector<double>>> &cache,
     }
     if (best_acc_batch > best_acc_final) {
       best_acc_final = best_acc_batch;
-      best_features.insert(best_feature);
       features.insert(best_feature);
+      best_features = features;
       cout << "Best feature set so far: ";
       for (auto i : best_features) {
         cout << i + 1 << ' ';
@@ -84,7 +80,14 @@ inline void forward(vector<vector<vector<double>>> &cache,
     cout << i + 1 << ' ';
   }
   cout << "with accuracy " << best_acc_final * 100 << "%" << endl;
-  return;
+
+  t_end = chrono::high_resolution_clock::now();
+  elapsed_time_ms =
+      chrono::duration<double, std::milli>(t_end - t_start).count();
+  cout << "Took " << elapsed_time_ms << " milliseconds to run forward search"
+       << endl;
+}
+
 }
 
 #endif
