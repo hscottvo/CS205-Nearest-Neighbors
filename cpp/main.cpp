@@ -9,6 +9,12 @@
 using namespace std;
 int main(int argc, char **argv) {
 
+  if (argc != 3) {
+    cout << "Usage: ./a.out <path_to_text_file> <search_type>" << endl;
+    cout << "\tValid search types: [forward, backward, both]" << endl;
+    exit(1);
+  }
+
   string filename = argv[1];
   string search_type = argv[2];
 
@@ -19,11 +25,16 @@ int main(int argc, char **argv) {
 
   auto cache = cache_diff_squared(features);
 
-  set<int> x = {6, 3, 0};
-
-  double y = LOO_accuracy(cache, x, labels);
-  cout << y << endl;
-  forward(cache, labels);
+  if (search_type == "forward") {
+    forward(cache, labels);
+  } else if (search_type == "backward") {
+    backward(cache, labels);
+  } else if (search_type == "both") {
+    cout << "Running forward:" << endl;
+    forward(cache, labels);
+    cout << "Running backward:" << endl;
+    backward(cache, labels);
+  } // forward(cache, labels);
 
   return 0;
 }
