@@ -4,14 +4,11 @@
 #include <algorithm>
 #include <cfloat>
 #include <chrono>
-#include <execution>
 #include <iostream>
-#include <math.h>
 #include <numeric>
 #include <set>
 #include <sstream>
-#include <stdexcept>
-#include <unordered_set>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -70,8 +67,6 @@ cache_diff_squared(vector<vector<double>> &data) {
   iota(i_idxs.begin(), i_idxs.end(), 0);
 
   for (unsigned int i = 0; i < data.size(); i++) {
-    // for_each(execution::par, i_idxs.begin(), i_idxs.end(),
-    //          [&data, &j, &k, &ret](int &i) {
     for (j = i + 1; j < data.size(); j++) {
       for (k = 0; k < data[0].size(); k++) {
         ret[i][j][k] = pow(data[i][k] - data[j][k], 2);

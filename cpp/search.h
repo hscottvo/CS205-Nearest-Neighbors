@@ -3,7 +3,6 @@
 #include "nn.h"
 #include <iostream>
 #include <set>
-#include <sstream>
 #include <unordered_set>
 #include <vector>
 
@@ -32,7 +31,8 @@ inline void forward(vector<vector<vector<double>>> &cache,
 
   set<int> features;
   set<int> best_features;
-  double best_acc_final = 0;
+  double best_acc_final = default_rate(labels);
+  cout << "Default rate: " << best_acc_final << endl;
   unsigned int num_features = cache.at(0).at(0).size();
 
   while (features.size() != num_features) {
@@ -102,7 +102,8 @@ inline void backward(vector<vector<vector<double>>> &cache,
 
   set<int> features;
   set<int> best_features;
-  double best_acc_final = 0;
+  double best_acc_final = default_rate(labels);
+  cout << "Default rate: " << best_acc_final << endl;
   unsigned int num_features = cache.at(0).at(0).size();
 
   for (unsigned int i = 0; i < num_features; i++) {

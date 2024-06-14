@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     forward(cache, labels);
     cout << "Running backward:" << endl;
     backward(cache, labels);
-  } // forward(cache, labels);
+  }
 
   return 0;
 }
